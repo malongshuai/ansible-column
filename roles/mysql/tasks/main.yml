@@ -1,8 +1,0 @@
----
-# tasks file for mysql
-- import_tasks: install_mysql.yml
-- import_tasks: mysql_cnf.yml
-- import_tasks: modify_mysql_temp_passwd.yml
-  when: not temporary_passwd_updated
-- import_tasks: ansible_mysql_connection_info.yml
-- import_tasks: do_anything_in_mysql.yml
