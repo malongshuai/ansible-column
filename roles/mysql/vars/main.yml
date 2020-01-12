@@ -1,0 +1,20 @@
+---
+# vars file for mysql
+temporary_passwd_updated: true
+mysql_passwd: "P@ssword1!"
+client: 
+  socket: "/data/mysql.sock"
+mysqldump: 
+  max_allowed_packet: "32M"
+mysqld: 
+  port: 3306
+  datadir: "/data"
+  socket: "/data/mysql.sock"
+  server_id: 100
+  log_bin: "mysql-bin"
+  sync_binlog: 1
+  binlog_format: "row"
+  character_set_server: "utf8mb4"
+  skip_name_resolve: 1
+  pid_file: "/data/mysql.pid"
+  log_error: "/data/error.log"

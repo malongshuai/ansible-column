@@ -1,0 +1,18 @@
+[client]
+socket = {{client.socket}}
+
+[mysqldump]
+max_allowed_packet = {{mysqldump.max_allowed_packet}}
+
+[mysqld]
+port = {{mysqld.port}}
+datadir = {{mysqld.datadir}}
+socket = {{mysqld.socket}}
+server_id = {{mysqld.server_id}}
+log-bin = {{mysqld.log_bin}}
+sync_binlog = {{mysqld.sync_binlog}}
+binlog_format = {{mysqld.binlog_format}}
+character-set-server = {{mysqld.character_set_server}}
+skip_name_resolve = {{mysqld.skip_name_resolve}}
+pid-file = {{mysqld.pid_file}}
+log-error = {{mysqld.log_error}}

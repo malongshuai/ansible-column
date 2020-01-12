@@ -1,0 +1,21 @@
+server {
+    listen       {{item.value.listen}};
+    server_name  {{item.value.server_name}};
+
+    location / {
+        root   /usr/share/nginx/html/{{item.key}};
+        index  index.html index.htm;
+    }
+
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass   {{item.value.fastcgi_pass}};
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME /usr/share/www/{{item.key}}/php$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+}

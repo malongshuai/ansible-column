@@ -1,0 +1,53 @@
+---
+# 移除localhost的匿名用户
+- name: remove anonymous user for localhost
+  mysql_user:
+    name: ""
+    host: localhost
+    state: absent
+
+# 移除所有匿名用户
+- name: remove all anonymous user
+  mysql_user:
+    name: ""
+    host_all: true
+    state: absent
+
+# 创建用户并指定权限
+- name: create user and grant privileges
+  mysql_user: 
+    name: "junmajinlong"
+    host: "192.168.200.%"
+    password: 'P@ssword2!'
+    priv: '*.*:ALL'
+    state: present
+    login_user: root
+    login_password: 'P@ssword1!'
+
+# 创建数据库
+- name: Create new databases with names 'foo' and 'bar'
+  mysql_db:
+    name: test
+    state: present
+
+# 创建多个数据库
+- name: Create new databases with names 'foo' and 'bar'
+  mysql_db:
+    name:
+      - "foo"
+      - "bar"
+    state: present
+
+# 删除test数据库
+- name: drop test database
+  mysql_db: 
+    name: test
+    state: absent
+
+# 删除多个数据库
+- name: drop databases with names 'foo' and 'bar'
+  mysql_db:
+    name:
+      - "foo"
+      - "bar"
+    state: absent

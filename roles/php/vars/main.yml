@@ -1,0 +1,5 @@
+---
+# vars file for php
+phpfpm_addr: 0.0.0.0
+# phpfpm_port: 9000
+phpfpm_port: "{{hostvars[groups.php[0]].phpfpm_port}}"

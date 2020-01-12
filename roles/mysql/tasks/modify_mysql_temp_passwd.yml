@@ -1,0 +1,19 @@
+---
+- name: get initialize temp password
+  shell: |
+    sed -rn '/temp.*pass/s/^.*root@localhost: (.*)$/\1/p' {{mysqld.log_error}}
+  register: tmp_passwd
+
+- name: modify root@localhost password before any op
+  shell: |
+    mysql -uroot -p'{{tmp_passwd.stdout}}' \
+    --connect-expired-password \
+    -NBe \
+    'ALTER USER "root"@"localhost" identified by "{{mysql_passwd}}";'
+
+- name: update variable temporary_passwd_updated to TRUE
+  lineinfile:
+    path: "{{role_path}}/vars/main.yml"
+    line: 'temporary_passwd_updated: true'
+    regexp: '^temporary_passwd_updated:.*'
+  delegate_to: localhost

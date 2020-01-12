@@ -1,0 +1,23 @@
+---
+- name: remove nginx default vhost file
+  file: 
+    name: /etc/nginx/conf.d/default.conf
+    state: absent
+  when: ansible_loop.first
+
+- name: render and copy vhosts config
+  template: 
+    src: vhost.conf.j2
+    dest: "/etc/nginx/conf.d/{{item.key}}.conf"
+  notify: "reload nginx"
+
+- name: create dir on nginx
+  file: 
+    name: "/usr/share/nginx/html/{{item.key}}"
+    state: directory
+
+- name: create dir on php
+  file: 
+    name: "/usr/share/www/{{item.key}}/php"
+    state: directory
+  delegate_to: "{{groups.php[0]}}"
