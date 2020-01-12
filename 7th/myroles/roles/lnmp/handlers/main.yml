@@ -1,0 +1,13 @@
+---
+# handlers file for lnmp
+
+- name: reload nginx
+  service: 
+    name: nginx
+    state: reloaded
+    enabled: true
+
+- name: restart mysql
+  service:
+    name: mysqld
+    state: restarted

@@ -1,0 +1,15 @@
+---
+- name: render mysql config
+  template:
+    src: mysql.cnf.j2
+    dest: /etc/my.cnf
+  notify: restart mysql
+
+- name: create mysql datadir
+  file: 
+    name: "{{mysqld.datadir}}"
+    state: directory
+    owner: mysql
+    group: mysql
+
+- meta: flush_handlers

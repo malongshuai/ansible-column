@@ -1,0 +1,19 @@
+---
+- name: add_yum repo for nginx, php, mysql
+  import_tasks: add_repo.yml
+
+- name: nginx config
+  import_tasks: nginx_install_config.yml
+  when: "'nginx' in group_names"
+
+- name: php config
+  import_tasks: php_install_config.yml
+  when: "'php' in group_names"
+  tags: 
+    - php
+
+- name: mysql config
+  import_tasks: mysql_install_config.yml
+  when: "'mysql' in group_names"
+  tags: 
+    - mysql

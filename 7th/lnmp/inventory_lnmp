@@ -1,0 +1,13 @@
+[nginx]
+192.168.200.42
+
+[php]
+192.168.200.43
+
+[mysql]
+192.168.200.44
+
+[dev:children]
+nginx
+php
+mysql

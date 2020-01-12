@@ -1,0 +1,100 @@
+---
+- name: install mysql
+  yum: 
+    name: "{{item}}"
+    state: installed
+  loop: 
+    - mysql-community-server
+    - mysql-community-client
+    - python2-PyMySQL
+    - MySQL-python
+
+- name: render mysql config
+  template:
+    src: mysql.cnf.j2
+    dest: /etc/my.cnf
+  notify: restart mysql
+
+- name: create mysql datadir
+  file: 
+    name: "{{mysql.mysqld.datadir}}"
+    state: directory
+    owner: mysql
+    group: mysql
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: modify mysql temp password
+  block:
+    - name: get initialize temp password
+      shell: |
+        sed -rn '/temp.*pass/s/^.*root@localhost: (.*)$/\1/p' {{mysql.mysqld.log_error}}
+      register: tmp_passwd
+
+    - name: modify root@localhost password before any op
+      shell: |
+        mysql -uroot -p'{{tmp_passwd.stdout}}' \
+        --connect-expired-password \
+        -NBe \
+        'ALTER USER "root"@"localhost" identified by "{{mysql.mysql_passwd}}";'
+  tags: 
+    - never
+
+- name: set mysql connection info for ansible
+  template:
+    src: .my.cnf.j2
+    dest: /root/.my.cnf
+
+# 移除localhost的匿名用户
+- name: remove anonymous user for localhost
+  mysql_user:
+    name: ""
+    host: localhost
+    state: absent
+
+# 移除所有匿名用户
+- name: remove all anonymous user
+  mysql_user:
+    name: ""
+    host_all: true
+    state: absent
+
+# 创建用户并指定权限
+- name: create user and grant privileges
+  mysql_user: 
+    name: "junmajinlong"
+    host: "192.168.200.%"
+    password: 'P@ssword2!'
+    priv: '*.*:ALL'
+    state: present
+    login_user: root
+    login_password: 'P@ssword1!'
+
+# 创建数据库
+- name: Create new databases with names 'foo' and 'bar'
+  mysql_db:
+    name: test
+    state: present
+
+# 创建多个数据库
+- name: Create new databases with names 'foo' and 'bar'
+  mysql_db:
+    name:
+      - "foo"
+      - "bar"
+    state: present
+
+# 删除test数据库
+- name: drop test database
+  mysql_db: 
+    name: test
+    state: absent
+
+# 删除多个数据库
+- name: drop databases with names 'foo' and 'bar'
+  mysql_db:
+    name:
+      - "foo"
+      - "bar"
+    state: absent

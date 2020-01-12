@@ -1,0 +1,14 @@
+---
+# defaults file for lnmp
+worker_processes: 1
+worker_rlimit_nofile: 1024
+worker_connections: 1024
+multi_accept: "on"
+send_file: "on"
+tcp_nopush: "off"
+tcp_nodelay: "on"
+keepalive_timeout: 65
+server_tokens: "on"
+gzip: "off"
+gzip_min_length: 1024
+gzip_types: ['text/plain']

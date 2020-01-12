@@ -1,0 +1,5 @@
+---
+- name: set mysql connection info for ansible
+  template:
+    src: .my.cnf.j2
+    dest: /root/.my.cnf

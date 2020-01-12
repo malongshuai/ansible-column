@@ -1,0 +1,5 @@
+---
+- name: add_yum repo for nginx, php, mysql
+  copy: 
+    src: lnmp.repo
+    dest: /etc/yum.repos.d/lnmp.repo
