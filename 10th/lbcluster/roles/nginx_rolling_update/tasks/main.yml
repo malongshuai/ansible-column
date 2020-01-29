@@ -1,0 +1,35 @@
+---
+# tasks file for roles/nginx_rolling_update
+
+- name: render nginx config
+  template: 
+    src: nginx.vhost.conf.j2
+    dest: /etc/nginx/conf.d/default.conf
+  notify: "reload nginx"
+  register: render
+
+# if template changed=0, skip remaining tasks for this node
+- meta: end_host
+  when: not render.changed
+
+- name: disable current nginx node in haproxy
+  haproxy:
+    backend: static_group
+    host: "{{inventory_hostname}}"
+    state: disabled
+    socket: "{{socket}}"
+  delegate_to: "{{groups['lb'][0]}}"
+
+- meta: flush_handlers
+
+- name: ensure nginx is healthy running
+  wait_for: 
+    port: "{{ngx_port}}"
+
+- name: enable current nginx node in haproxy
+  haproxy: 
+    backend: static_group
+    host: "{{inventory_hostname}}"
+    state: enabled
+    socket: "{{socket}}" 
+  delegate_to: "{{groups['lb'][0]}}"

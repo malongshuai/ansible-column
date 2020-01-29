@@ -1,0 +1,12 @@
+---
+# handlers file for haproxy
+- name: reload haproxy
+  shell: |
+    haproxy -f {{haproxy_config}} -c -q && bash -c '
+    if killall -0 haproxy &>/dev/null;then
+      # 进程已存在，则reload(haproxy 1.8则socket reload)
+      haproxy -f {{haproxy_config}} -q -p {{pidfile}} -sf $(cat {{pidfile}}) {{ "-x "~socket if haproxy_version is defined and haproxy_version is version("1.8",">=") else "" }}
+    else
+      # 进程不存在，则启动
+      haproxy -f {{haproxy_config}} -q -p {{pidfile}}
+    fi'

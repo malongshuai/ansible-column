@@ -1,0 +1,29 @@
+---
+# tasks file for nginx
+
+- name: config ius repo
+  yum_repository:
+    name: nginxrepo
+    description: nginx repo
+    baseurl: http://nginx.org/packages/centos/$releasever/$basearch/
+    gpgcheck: no
+
+- name: install nginx
+  shell: yum install -y nginx
+
+- name: template nginx config
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  notify: "reload nginx"
+
+- name: template nginx vhost config
+  template: 
+    src: nginx.vhost.conf.j2
+    dest: /etc/nginx/conf.d/default.conf
+  notify: "reload nginx"
+
+- name: template index.html for test 
+  template: 
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html

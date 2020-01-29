@@ -1,0 +1,4 @@
+---
+# vars file for roles/nginx_rolling_update
+ngx_port: "{{nginx_port}}"
+socket: "{{haproxy_socket}}"

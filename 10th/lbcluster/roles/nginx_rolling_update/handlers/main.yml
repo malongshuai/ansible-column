@@ -1,0 +1,14 @@
+---
+# handlers file for roles/nginx_rolling_update
+- name: check nginx syntax
+  shell: |
+    nginx -t -c /etc/nginx/nginx.conf
+  listen: reload nginx
+  register: syntax
+
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded
+  listen: reload nginx
+  when: syntax.rc == 0

@@ -1,0 +1,7 @@
+# haproxy
+haproxy_version: 1.8
+haproxy_config: /etc/haproxy/haproxy.cfg
+haproxy_socket: /var/lib/haproxy/stats
+
+# nginx
+nginx_port: 80

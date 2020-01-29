@@ -1,0 +1,17 @@
+---
+
+- name: intstall and config haproxy
+  hosts: lb
+  gather_facts: no
+  roles:
+   - haproxy
+
+- name: install and config nginx
+  hosts: nginx
+  gather_facts: no
+  roles: 
+    - nginx
+
+
+
+

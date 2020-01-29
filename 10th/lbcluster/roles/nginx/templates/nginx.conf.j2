@@ -1,0 +1,31 @@
+user nginx;
+worker_processes {{ worker_processes }};
+error_log /var/log/nginx/error.log warn;
+pid /var/run/nginx.pid;
+
+worker_rlimit_nofile {{worker_rlimit_nofile}};
+
+events {
+  worker_connections {{ worker_connections }};
+  multi_accept {{ multi_accept }};
+}
+
+http {
+  sendfile {{ send_file }};
+  tcp_nopush {{ tcp_nopush }};
+  tcp_nodelay {{ tcp_nodelay }};
+
+  keepalive_timeout {{ keepalive_timeout }};
+  server_tokens {{ server_tokens }};
+  include /etc/nginx/mime.types;
+
+  access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log warn;
+
+  include /etc/nginx/conf.d/*.conf;
+}
+
+
+
+
+

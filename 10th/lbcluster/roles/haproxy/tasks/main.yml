@@ -1,0 +1,19 @@
+---
+# tasks file for haproxy
+- name: config ius repo
+  yum_repository:
+    name: iusrepo
+    description: ius repo
+    baseurl: https://mirrors.tuna.tsinghua.edu.cn/ius/$releasever/$basearch/
+    gpgcheck: no
+
+# 本文使用haproxy 1.8，后面会使用到1.8版本才提供的完美reload功能
+- name: install haproxy
+  shell: yum install -y haproxy18u
+
+- name: template haproxy config
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    validate: haproxy -f %s -c
+  notify: "reload haproxy"

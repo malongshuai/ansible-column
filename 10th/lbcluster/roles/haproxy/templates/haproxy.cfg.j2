@@ -1,0 +1,50 @@
+global
+    log         127.0.0.1 local2
+    chroot      /var/lib/haproxy
+    pidfile     {{pidfile|default("/var/run/haproxy.pid")}}
+    maxconn     20000
+    user        haproxy
+    group       haproxy
+    daemon
+    stats socket {{socket|default("/var/lib/haproxy/stats")}} level admin {{ "expose-fd listeners" if haproxy_version is defined and haproxy_version is version("1.8",">=") else "" }}
+    spread-checks 2
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    timeout http-request    2s
+    timeout queue           3s
+    timeout connect         1s
+    timeout client          10s
+    timeout server          2s
+    timeout http-keep-alive 10s
+    timeout check           2s
+    maxconn                 18000
+
+frontend main
+    bind             *:{{haproxy_port|default(80)}}
+    mode             http
+    log              global
+    capture request  header Host len 20
+    capture request  header Referer len 60
+    acl url_static   path_beg  -i /static /images /stylesheets
+    acl url_static   path_end  -i .jpg .jpeg .gif .png .ico .bmp .css .js
+    acl url_static   path_end  -i .html .htm .shtml .shtm .pdf .mp3 .mp4 .rm .rmvb .txt
+    acl url_static   path_end  -i .zip .rar .gz .tgz .bz2 .tgz
+
+    use_backend      static_group   if url_static
+
+backend static_group
+    balance            roundrobin
+    option             http-keep-alive
+    http-reuse         safe
+    option httpchk     GET /index.html
+    http-check expect  status 200
+{% for ngx_host in groups['nginx'] %}
+    server nginx{{loop.index}} {{ngx_host}}:{{nginx_port|default(80)}} check rise 1 maxconn 5000
+{% endfor %}
+

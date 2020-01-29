@@ -1,0 +1,6 @@
+---
+# vars file for haproxy
+
+pidfile: /var/run/haproxy.pid
+socket: "{{haproxy_socket}}"
+haproxy_port: 80
