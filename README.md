@@ -2,7 +2,7 @@
 
 执行如下命令，便可将所有文件下载到本地的ansible-column目录下：
 ```shell
-$ git clone git@github.com:malongshuai/ansible-column.git
+$ git clone https://github.com/malongshuai/ansible-column.git
 ```
 
 请大家根据专栏文章中的提示打开目录。
